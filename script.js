@@ -1,56 +1,91 @@
 //your JS code here. If required.
-//your code here
-
-let main = document.getElementsByTagName('main')[0];
-let n = Math.floor(Math.random() * 5 + 1);
-var randomImage = document.getElementsByClassName('none')[0];
-let images = document.querySelectorAll('img');
-let imageContainer = document.getElementsByClassName("image")[0];
-let arr = [];
-let reset = document.getElementById('reset');
-reset.style.display = 'none';
-let result = document.getElementsByClassName('para')[0];
-let verify = document.getElementById('verify');
-verify.style.display = 'none';
-randomImage.setAttribute("class", `img${n}`);
-images.forEach((e)=>{
-  e.addEventListener('click', ()=>{
-    e.style.border = "8px solid blue";
-    arr.push(e.getAttribute('class'));
-    if(arr.length>0 && arr.length<3){
-      reset.style.display = 'block';
+let resetbtn = document.querySelector("#reset");
+let verifybtn = document.querySelector("#verify");
+​
+​
+let imgtag = document.createElement("img");
+let randomvalue = Math.floor(Math.random()*5) +1;
+imgtag.setAttribute("class",`img${randomvalue}`);
+document.querySelector(".flex").appendChild(imgtag);
+​
+​
+let images = document.querySelectorAll("img");
+​
+images.forEach((image) => {
+    image.addEventListener("click", () => {
+        image.classList.toggle("selected");
+​
+        if(isrestbtnvalid()){
+         resetbtn.style.display="inline-block";
+        }
+        else{
+            resetbtn.style.display="none";
+        }
+​
+        if(isverifybtnvalid()){
+            verifybtn.style.display="inline-block";
+           }
+           else{
+               verifybtn.style.display="none";
+           }
+​
+    });
+​
+});
+function isrestbtnvalid(){
+    for(let i=0;i<images.length;i++){
+        if(images[i].classList.contains("selected")){
+            return true;
+        }      
     }
-    if(arr.length==2){
-      verify.style.display = 'block';
+    return false;
+}
+​
+function isverifybtnvalid(){
+    let count=0;
+    for(let i=0;i<images.length;i++){
+        if(images[i].classList.contains("selected")){
+            count++;
+        }      
     }
-    if(arr.length>2){
-      reset.style.display = 'none';
-      verify.style.display = 'none';
-      let para = document.createElement('p');
-      para.innerText = "Please select only 2 images.refresh the page";
-      main.append(para);
+    return (count==2);
+}
+​
+resetbtn.addEventListener("click", () => {
+    for(let i=0;i<images.length;i++){
+        if(images[i].classList.contains("selected")){
+            images[i].classList.remove("selected");
+        }      
     }
-  })
-})
-
-reset.addEventListener('click',()=>{
-  for(let i = 0;i<=arr.length;i++){
-    arr.pop();
+    resetbtn.style.display="none";
+​
+    let ps = document.querySelectorAll("p");
+    ps.forEach((p) =>{
+        document.querySelector("main").removeChild(p);
+    });
+    
+});
+​
+verifybtn.addEventListener("click", () => {
+    let p = document.createElement("p");
+    p.setAttribute("id","para");
+​
+​
+  let classarr = document.querySelectorAll(".selected");
+  if(classarr[0].getAttribute("class")==classarr[1].getAttribute("class")){
+     p.innerText = "You are a human. Congratulations!"
   }
-  reset.style.display = "none";
-  result.innerText = "";
-  verify.style.display = 'none'
-  images.forEach((e)=>{
-      e.style.border = 'none';
-  })
-})
-
-verify.addEventListener('click',()=>{
-  if(arr[0]==arr[1]){
-     result.innerText = 'You are a human.';
-  }else{
-    result.innerText = "We can't verify you as a human. You selected the non-identical tiles.";
+  else{
+    p.innerText = "We can't verify you as a human. You selected the non-identical tiles."
   }
-})
-
-imageContainer.append(randomImage);
+​
+  document.querySelector("main").appendChild(p);
+  verifybtn.style.display="none";
+​
+  for(let i=0;i<images.length;i++){
+    if(images[i].classList.contains("selected")){
+        images[i].classList.remove("selected");
+    }      
+ }
+   
+});
